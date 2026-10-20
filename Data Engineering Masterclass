@@ -1,1046 +1,2311 @@
-# Data Engineering Masterclass: Complete Study Guide
+# Data Engineering Masterclass — Complete Study Guide
 
-## Overview
+**Comprehensive Notes | Architecture | Azure Services | Interview Questions and Answers | Practical Scenarios**
 
-This repository contains structured study notes covering essential Data Engineering concepts, data processing, analytical data modeling, Big Data technologies, cloud computing, and an end-to-end Azure Data Engineering architecture.
+## About This Guide
 
-The goal is to build a strong foundation in designing reliable, scalable, secure, and maintainable data platforms while preparing for Data Engineering technical interviews.
+This repository contains a comprehensive study guide covering the core concepts discussed in the Data Engineering Masterclass transcripts.
 
-## Table of Contents
+It is designed for beginners, aspiring Data Engineers, and candidates preparing for technical interviews.
 
-1. Introduction to Data Engineering
-2. The Data Engineering Lifecycle
-3. Databases, SQL, and NoSQL
-4. Upstream and Downstream Systems
-5. Batch Processing and Incremental Loading
-6. Dimensional Modeling
-7. Slowly Changing Dimensions
-8. Data Lakes, Data Warehouses, and Lakehouses
-9. Row-Based and Columnar File Formats
-10. Delta Lake and ACID Transactions
-11. Big Data Fundamentals
-12. Distributed Computing and Apache Spark
-13. Apache Kafka, Airflow, and Hive
-14. Cloud Computing
-15. Medallion Architecture
-16. Azure Data Engineering Services
-17. End-to-End Azure Architecture
-18. Data Governance, Security, Monitoring, and CI/CD
-19. Data Engineering Best Practices
-20. Interview Preparation Checklist
+### Topics Covered
+
+- Data Engineering fundamentals
+- Data production, transformation, and serving
+- OLTP vs. OLAP
+- Relational and NoSQL databases
+- Database normalization
+- ETL, ELT, and data pipelines
+- Data warehouse architecture and layers
+- Full and incremental loading
+- Change Data Capture (CDC)
+- Facts, dimensions, and dimensional modeling
+- Star schema and snowflake schema
+- Slowly Changing Dimensions (SCD)
+- Cloud computing fundamentals
+- Medallion Architecture: Bronze, Silver, Gold
+- Azure Data Engineering services
+- End-to-end Azure architecture
+- Data governance, security, monitoring, and DevOps
+- Interview questions with model answers
+- Real-world troubleshooting scenarios
+- Glossary and revision checklist
+
+> **Note:** Cloud products and pricing evolve over time. Always verify current official documentation before implementing a production architecture. The architecture examples in this guide are conceptual and may be adapted to different platforms.
 
 ---
 
-## 1. Introduction to Data Engineering
+# Table of Contents
 
-Data Engineering is the discipline of designing, building, maintaining, and optimizing systems that collect, store, process, transform, and deliver data to downstream consumers.
+1. [Introduction to Data Engineering](#1-introduction-to-data-engineering)
+2. [The Three Pillars of Data Engineering](#2-the-three-pillars-of-data-engineering)
+3. [Data Sources and Storage Systems](#3-data-sources-and-storage-systems)
+4. [OLTP vs. OLAP](#4-oltp-vs-olap)
+5. [Database Normalization](#5-database-normalization)
+6. [ETL, ELT, and Data Pipelines](#6-etl-elt-and-data-pipelines)
+7. [Data Warehouse Architecture](#7-data-warehouse-architecture)
+8. [Full Loads, Incremental Loads, and CDC](#8-full-loads-incremental-loads-and-cdc)
+9. [Dimensional Modeling](#9-dimensional-modeling)
+10. [Star Schema vs. Snowflake Schema](#10-star-schema-vs-snowflake-schema)
+11. [Slowly Changing Dimensions](#11-slowly-changing-dimensions)
+12. [Cloud Computing](#12-cloud-computing)
+13. [Medallion Architecture](#13-medallion-architecture)
+14. [Cloud Providers and Data Lake Storage](#14-cloud-providers-and-data-lake-storage)
+15. [Azure Data Engineering Services](#15-azure-data-engineering-services)
+16. [End-to-End Azure Architecture](#16-end-to-end-azure-architecture)
+17. [Governance, Security, DevOps, Monitoring, and Cost](#17-governance-security-devops-monitoring-and-cost)
+18. [Mind Maps and Architecture Diagrams](#18-mind-maps-and-architecture-diagrams)
+19. [Data Engineering Interview Questions and Answers](#19-data-engineering-interview-questions-and-answers)
+20. [Practical Interview Scenarios](#20-practical-interview-scenarios)
+21. [Glossary](#21-glossary)
+22. [Final Revision Checklist](#22-final-revision-checklist)
+
+---
+
+# 1. Introduction to Data Engineering
+
+## 1.1 What Is Data Engineering?
+
+Data Engineering is the discipline of designing, building, operating, and maintaining systems that collect, store, process, transform, and deliver data.
+
+The objective is to make data reliable, accessible, secure, and useful for downstream consumers.
 
 These consumers may include:
 
 - Data Analysts
 - Data Scientists
-- Business Intelligence Developers
+- Business Intelligence teams
 - Machine Learning Engineers
-- Business applications
-- Executives and decision-makers
+- Applications
+- Business managers and decision-makers
 
-The purpose of Data Engineering is to make data **available, reliable, consistent, secure, and useful**.
+Data engineering is not just about writing SQL queries. It also involves data architecture, pipeline automation, data quality, orchestration, performance optimization, security, monitoring, and cost management.
 
-### A Simple Analogy
+## 1.2 A Simple Analogy
 
-Think of a data engineer as a chef:
+Think of data engineering as a restaurant.
 
-- Raw data represents raw ingredients.
-- Data transformation represents preparing and cooking ingredients.
-- Curated data represents a finished meal.
-- Data consumers represent the people who use or consume the final product.
+- **Raw ingredients:** Data coming from different source systems.
+- **Kitchen:** The infrastructure used to ingest, store, clean, and transform data.
+- **Cooking process:** Data processing and business logic.
+- **Finished meal:** Curated datasets, reports, dashboards, and analytical outputs.
+- **Customers:** Analysts, business users, data scientists, and applications.
 
-Simply collecting data is not enough. Data must be prepared and delivered in a form that meets business requirements.
+Just as a restaurant needs a reliable process to prepare consistent meals, an organization needs reliable data pipelines to produce trustworthy data.
 
-### Why Is Data Engineering Important?
+## 1.3 Why Is Data Engineering Important?
 
-Organizations generate data through:
+Modern organizations generate data from many sources:
 
-- Websites and mobile applications
-- Online transactions
+- E-commerce transactions
+- Banking operations
+- Mobile applications
+- Website activity
 - Customer relationship management systems
-- Enterprise resource planning systems
-- APIs and third-party services
-- IoT devices and sensors
+- APIs
+- IoT devices
 - Application logs
-- Streaming platforms
-- Operational databases
+- Third-party platforms
+- Business applications
 
-As data volume, variety, and velocity increase, organizations need automated and reliable systems to process it.
+Raw data is often distributed across systems and may be inconsistent or difficult to analyze directly.
+
+Data engineering combines and prepares this data so organizations can make informed decisions.
+
+## 1.4 Typical Responsibilities of a Data Engineer
+
+A Data Engineer may be responsible for:
+
+1. Extracting data from databases, APIs, files, and streams.
+2. Designing storage systems and data architectures.
+3. Developing ETL and ELT pipelines.
+4. Cleaning and validating datasets.
+5. Building batch and streaming processing systems.
+6. Designing facts, dimensions, and data marts.
+7. Implementing incremental loading and CDC.
+8. Automating workflows and dependencies.
+9. Monitoring failures and investigating incidents.
+10. Managing access control and secrets.
+11. Optimizing query performance and cloud costs.
+12. Documenting data definitions, lineage, and pipeline behavior.
 
 ---
 
-## 2. The Data Engineering Lifecycle
+# 2. The Three Pillars of Data Engineering
 
-A simplified Data Engineering workflow is:
+A useful way to understand data engineering is through three major pillars.
 
-**Data Production → Data Ingestion → Data Storage → Data Transformation → Data Serving**
+## 2.1 Data Production
 
-### 2.1 Data Production
-
-Data is generated by source systems.
+Data production is the stage where data is generated.
 
 Examples:
 
-- A customer purchases a product.
-- A mobile application records user activity.
+- A customer places an order.
+- A payment is processed.
+- A user clicks a button on a website.
 - An IoT sensor measures temperature.
-- An application generates an error log.
-- A payment service produces a transaction event.
+- An API returns customer or product information.
 
-### 2.2 Data Ingestion
+The Data Engineer must understand where the data originates, its format, how frequently it changes, and how it can be accessed.
 
-Data ingestion transfers or collects data from source systems into a target platform.
+## 2.2 Data Transformation
 
-Common ingestion patterns include:
+Transformation prepares raw data for reliable use.
 
-- Batch ingestion
-- Incremental ingestion
-- Change Data Capture (CDC)
-- Streaming ingestion
-- API-based ingestion
-- File-based ingestion
+Typical operations include:
 
-### 2.3 Data Storage
-
-Data may be stored in:
-
-- Relational databases
-- NoSQL databases
-- Object storage
-- Data lakes
-- Data warehouses
-- Lakehouse tables
-- Message brokers and event-streaming platforms
-
-### 2.4 Data Transformation
-
-Data transformation converts raw data into a reliable and useful form.
-
-Common operations include:
-
-- Cleaning invalid records
 - Removing duplicates
-- Standardizing data types
-- Normalizing date and timestamp formats
+- Handling missing values
+- Standardizing date formats
+- Converting data types
 - Joining datasets
-- Applying business rules
-- Enriching records
-- Aggregating measures
-- Validating data quality
-- Creating analytical data models
+- Validating business rules
+- Aggregating records
+- Parsing JSON
+- Standardizing identifiers
+- Creating derived columns
 
-### 2.5 Data Serving
+Transformation can be performed using SQL, Python, Apache Spark, or other processing engines.
 
-Prepared data is delivered to consumers through:
+## 2.3 Data Serving
 
-- SQL tables and views
-- Data warehouse models
+Serving makes processed data available to consumers.
+
+Examples include:
+
 - Power BI dashboards
-- APIs
-- Semantic models
+- Data warehouse tables
+- Data marts
+- Analytical SQL views
 - Machine learning datasets
-- Data products and extracts
+- Data APIs
+- Curated files
 
-A successful pipeline must satisfy consumer requirements for data quality, accessibility, freshness, performance, and security.
+## 2.4 The Overall Flow
+
+```text
+Data Production
+      |
+      v
+Data Ingestion
+      |
+      v
+Data Storage
+      |
+      v
+Data Transformation
+      |
+      v
+Data Quality Validation
+      |
+      v
+Curated Data Products
+      |
+      v
+Analytics | BI | Data Science | Applications
+```
 
 ---
 
-## 3. Databases, SQL, and NoSQL
+# 3. Data Sources and Storage Systems
 
-### 3.1 Relational Databases
+## 3.1 Common Data Sources
 
-Relational databases store information in tables containing rows and columns.
+| Source | Example | Important Considerations |
+|---|---|---|
+| Relational database | PostgreSQL, MySQL | Tables, keys, transactions |
+| API | REST API returning JSON | Authentication, pagination, rate limits |
+| Files | CSV, JSON, XML, Parquet | Schema, encoding, file size |
+| Event streams | Application events | Throughput, ordering, latency |
+| IoT devices | Sensors and telemetry | High volume, time-series data |
+| Application logs | Web server logs | Parsing, retention, semi-structured fields |
+| SaaS platforms | CRM applications | Connector limitations and quotas |
 
-They commonly support:
+## 3.2 Structured Data
 
-- Structured schemas
-- Relationships between tables
-- Constraints
-- SQL queries
-- Transactions
+Structured data follows a defined schema, often represented as rows and columns.
 
-Examples include SQL Server, PostgreSQL, MySQL, and Azure SQL Database.
+Example:
 
-### 3.2 SQL
+| CustomerID | CustomerName | City |
+|---:|---|---|
+| 101 | Ahmed | Cairo |
+| 102 | Sara | Alexandria |
 
-SQL stands for Structured Query Language.
+Relational databases are commonly used to store structured data.
 
-It is commonly used to query and manipulate relational data.
+## 3.3 Semi-Structured Data
 
-```sql
-SELECT
-    customer_id,
-    SUM(order_amount) AS total_sales
-FROM orders
-GROUP BY customer_id;
+Semi-structured data contains recognizable structure but may not follow a fixed relational schema.
+
+Examples:
+
+- JSON
+- XML
+- Nested application events
+
+Example JSON:
+
+```json
+{
+  "customer_id": 101,
+  "name": "Ahmed",
+  "address": {
+    "city": "Cairo",
+    "country": "Egypt"
+  }
+}
 ```
 
-This query calculates total sales for each customer.
+## 3.4 Unstructured Data
 
-Common SQL operations include:
+Unstructured data does not naturally fit a simple relational table.
 
-| Operation | Purpose |
-|---|---|
-| SELECT | Retrieve data |
-| INSERT | Insert new rows |
-| UPDATE | Modify existing rows |
-| DELETE | Remove rows |
-| JOIN | Combine related tables |
-| GROUP BY | Aggregate data |
-| ORDER BY | Sort query results |
+Examples:
 
-### 3.3 NoSQL
+- Images
+- Audio
+- Video
+- PDF documents
+- Free-form text
 
-NoSQL is commonly interpreted as "Not Only SQL."
+Data lakes can store structured, semi-structured, and unstructured data, although each format requires suitable processing and governance.
 
-It describes several types of non-relational databases:
+## 3.5 Relational Databases
+
+A relational database organizes information into tables.
+
+Important concepts:
+
+- **Table:** A collection of records.
+- **Row:** One record.
+- **Column:** An attribute.
+- **Primary Key:** Uniquely identifies a row.
+- **Foreign Key:** References a key in another table.
+- **Constraint:** Enforces a rule on data.
+- **Transaction:** A logical unit of work.
+
+Examples include PostgreSQL, MySQL, Microsoft SQL Server, and Oracle Database.
+
+## 3.6 NoSQL Databases
+
+NoSQL includes several types of database systems:
 
 - Document databases
 - Key-value databases
 - Wide-column databases
 - Graph databases
 
-NoSQL systems may be appropriate for flexible data models, specialized access patterns, or particular scalability requirements.
+They can be useful when flexible document structures, specific access patterns, or large-scale distribution are important.
 
-The choice between relational and NoSQL technologies depends on consistency requirements, data relationships, query patterns, scale, and operational needs.
+NoSQL does not mean that data has no structure. Every system still requires a suitable data model.
 
-### 3.4 DBA vs. Data Engineer
+## 3.7 DBA vs. Data Engineer
 
-A Database Administrator (DBA) often focuses on:
+| Database Administrator (DBA) | Data Engineer |
+|---|---|
+| Database availability | Data pipeline reliability |
+| Backup and recovery | Data ingestion |
+| Database permissions | Data transformation |
+| Index and query tuning | Data modeling |
+| Operational database health | Analytical platform design |
+| Database configuration | Workflow automation |
 
-- Database availability
-- Backup and recovery
-- Performance tuning
-- Security and permissions
-- Database configuration
-- Operational reliability
+Responsibilities vary by organization, and the roles frequently collaborate.
 
-A Data Engineer often focuses on:
+## 3.8 Upstream and Downstream
 
-- Data ingestion
-- Data transformation
-- Pipeline orchestration
-- Analytical data modeling
-- Data quality
-- Data delivery
-
-Responsibilities can overlap and vary between organizations.
-
----
-
-## 4. Upstream and Downstream Systems
-
-### Upstream Systems
-
-Upstream systems provide data to a particular pipeline component.
-
-Examples include:
-
-- Operational databases
-- APIs
-- CSV and JSON files
-- Applications
-- Event streams
-- External data providers
-
-### Downstream Systems
-
-Downstream systems consume the output of a pipeline component.
-
-Examples include:
-
-- Data warehouses
-- Power BI reports
-- Analytics applications
-- Machine learning workflows
-- Business applications
-
-These terms are relative to the component being discussed. A warehouse can be downstream of an ingestion pipeline and upstream of a reporting system.
-
-Understanding dependencies helps engineers troubleshoot failures and assess the impact of schema changes.
-
----
-
-## 5. Batch Processing and Incremental Loading
-
-### 5.1 Full Load
-
-A full load reloads all selected records from a source.
-
-Advantages:
-
-- Simple to understand
-- Can rebuild a target from scratch
-- Useful for small datasets or initial loads
-
-Disadvantages:
-
-- May consume unnecessary compute
-- Can increase network traffic
-- Becomes expensive for large datasets
-- May take longer as data grows
-
-### 5.2 Incremental Load
-
-An incremental load processes only new or changed records since a previous successful run.
-
-Common approaches include:
-
-- `created_at` timestamps
-- `updated_at` timestamps
-- Increasing identifiers
-- Change Data Capture
-- Transaction logs
-- Source change tracking
-- Watermarks
-
-### 5.3 Watermarks
-
-A watermark identifies the latest successfully processed position, timestamp, or identifier.
-
-A subsequent pipeline run uses the watermark to determine what data to process next.
-
-A reliable incremental pipeline must account for:
-
-- Late-arriving records
-- Updated records
-- Deleted records
-- Duplicate events
-- Failed runs
-- Retries
-- Time-zone differences
-- Records sharing the same timestamp
-
-### 5.4 Staging and Core Layers
-
-A common design first loads data into a staging or landing area, then validates and transforms it into core or curated tables.
-
-Staging supports auditing, replay, troubleshooting, and separation between extraction and transformation.
-
-### 5.5 Idempotency
-
-An operation is idempotent when repeating it produces the same intended result as executing it once.
-
-Idempotency is important because data pipelines can fail and require retries.
-
-Common techniques include:
-
-- Stable business keys
-- Deduplication
-- Merge or upsert operations
-- Transactional writes
-- Deterministic partition replacement
-- Correct checkpoint management
-
----
-
-## 6. Dimensional Modeling
-
-Dimensional modeling organizes data to make analytical queries and business reporting easier.
-
-### 6.1 Fact Tables
-
-A fact table records measurable business events.
-
-Examples:
-
-- Sales transactions
-- Orders
-- Payments
-- Deliveries
-- Website sessions
-
-Fact tables commonly contain:
-
-- Foreign keys to dimensions
-- Numeric measures
-- Dates or timestamps
-- Transaction identifiers
-
-#### Fact Table Grain
-
-The grain defines exactly what one row represents.
-
-For example:
-
-- One row per order
-- One row per order line
-- One row per customer per day
-
-The grain must be clearly defined before designing the fact table.
-
-### 6.2 Dimension Tables
-
-Dimension tables describe the context of business events.
-
-Examples:
-
-- Customer
-- Product
-- Date
-- Store
-- Employee
-- Geography
-
-Dimensions contain descriptive attributes used for filtering, grouping, and labeling analytical results.
-
-### 6.3 Star Schema
-
-A star schema contains a central fact table connected directly to dimension tables.
-
-Advantages:
-
-- Easy for analysts to understand
-- Straightforward relationships
-- Often convenient for BI tools
-- Commonly supports efficient analytical queries
-
-### 6.4 Snowflake Schema
-
-A snowflake schema normalizes some dimension tables into related sub-dimension tables.
-
-Advantages may include reduced redundancy and clearer normalization.
-
-Potential disadvantages include additional joins and increased complexity for analytical consumers.
-
-Neither schema is universally superior. The choice depends on business needs, query patterns, governance, and platform behavior.
-
----
-
-## 7. Slowly Changing Dimensions (SCD)
-
-Slowly Changing Dimensions define how changes to dimension attributes are recorded.
-
-### SCD Type 0 — Retain the Original Value
-
-The original value remains unchanged.
-
-Use this approach when the first recorded value must be preserved.
-
-### SCD Type 1 — Overwrite
-
-The old value is replaced with the new value.
-
-Historical values are not preserved in the dimension row.
-
-Example: Correcting a misspelled customer name.
-
-### SCD Type 2 — Preserve History
-
-A new dimension row is created whenever a tracked attribute changes.
-
-Common columns include:
-
-- Business key
-- Surrogate key
-- Effective start date
-- Effective end date
-- Current-row indicator
+- **Upstream:** A component that supplies data to another component.
+- **Downstream:** A component that consumes data from another component.
 
 Example:
 
-| Customer Key | Customer ID | City | Start Date | End Date | Current |
-|---|---|---|---|---|---|
-| 101 | C001 | Cairo | 2024-01-01 | 2025-05-31 | No |
-| 205 | C001 | Alexandria | 2025-06-01 | NULL | Yes |
+```text
+Operational Database
+        |
+        v
+Ingestion Pipeline
+        |
+        v
+Data Warehouse
+        |
+        v
+Power BI Report
+```
 
-This allows historical reports to reflect the attributes that were valid at the time of a transaction.
-
-### SCD Type 3 — Limited Previous Values
-
-The current value and one or more previous values are stored in separate columns.
-
-This preserves limited history rather than a full sequence of changes.
-
-### Choosing an SCD Type
-
-- Type 0: Never change the recorded value.
-- Type 1: Replace the value without retaining history.
-- Type 2: Preserve historical versions in separate rows.
-- Type 3: Preserve limited history in separate columns.
+A schema change in an upstream system may break downstream transformations, tables, or reports.
 
 ---
 
-## 8. Data Lakes, Data Warehouses, and Lakehouses
+# 4. OLTP vs. OLAP
 
-### 8.1 Data Lake
+## 4.1 OLTP — Online Transaction Processing
 
-A data lake stores data in a range of formats, often in object storage.
+OLTP systems support everyday business operations.
 
-It can contain:
+Examples:
+
+- Creating an order
+- Updating inventory
+- Recording a payment
+- Changing a customer address
+- Processing a refund
+
+Characteristics:
+
+- Frequent inserts, updates, and deletes
+- Many concurrent transactions
+- Low-latency operations
+- Strong transactional requirements
+- Queries that often target specific records
+- Frequently normalized schemas
+
+Examples include PostgreSQL, MySQL, SQL Server, and Oracle when used for operational workloads.
+
+## 4.2 OLAP — Online Analytical Processing
+
+OLAP systems support analytical workloads.
+
+Examples:
+
+- Total sales by month
+- Revenue by product category
+- Customer retention trends
+- Regional performance comparisons
+- Year-over-year business analysis
+
+Characteristics:
+
+- Read-heavy analytical queries
+- Large scans and aggregations
+- Historical analysis
+- Data integrated from multiple sources
+- Analytical models and dimensional structures
+
+Examples include Snowflake, Amazon Redshift, Google BigQuery, and Azure Synapse Analytics.
+
+These platforms belong to a similar broad category but are not identical in architecture or features.
+
+## 4.3 Comparison
+
+| Feature | OLTP | OLAP |
+|---|---|---|
+| Purpose | Run business transactions | Analyze business performance |
+| Workload | Inserts, updates, deletes | Scans, joins, aggregations |
+| Data scope | Operational records | Integrated and historical data |
+| Query complexity | Usually short and targeted | Often complex and broad |
+| Common modeling | Normalized relational schema | Dimensional or analytical models |
+| Main users | Applications and operations teams | Analysts and business users |
+
+---
+
+# 5. Database Normalization
+
+Normalization reduces unnecessary data duplication and helps prevent data anomalies.
+
+## 5.1 First Normal Form (1NF)
+
+A table generally satisfies 1NF when each field contains an atomic value under the chosen model and repeating groups are avoided.
+
+Avoid storing multiple independent values in one field when they should be represented as separate records.
+
+## 5.2 Second Normal Form (2NF)
+
+A table must satisfy 1NF, and every non-key attribute must depend on the whole candidate key rather than only part of a composite key.
+
+## 5.3 Third Normal Form (3NF)
+
+A table must satisfy 2NF and avoid inappropriate transitive dependencies of non-key attributes on a key.
+
+## 5.4 Why Normalization Matters
+
+Normalization helps:
+
+- Reduce unwanted duplication
+- Improve consistency
+- Prevent update anomalies
+- Make transactional relationships clearer
+
+Analytical systems may intentionally denormalize some data to simplify reporting queries.
+
+---
+
+# 6. ETL, ELT, and Data Pipelines
+
+## 6.1 ETL
+
+ETL means:
+
+1. **Extract:** Retrieve data from source systems.
+2. **Transform:** Clean, validate, standardize, and reshape the data.
+3. **Load:** Write the transformed data into the target.
+
+```text
+Source
+  |
+  v
+Extract
+  |
+  v
+Transform
+  |
+  v
+Load
+  |
+  v
+Target
+```
+
+## 6.2 ELT
+
+ELT means:
+
+1. Extract data.
+2. Load data into the target platform.
+3. Transform data inside the target platform.
+
+```text
+Source
+  |
+  v
+Extract
+  |
+  v
+Load Raw Data
+  |
+  v
+Transform in Warehouse/Lakehouse
+  |
+  v
+Curated Data
+```
+
+## 6.3 ETL vs. ELT
+
+| ETL | ELT |
+|---|---|
+| Transform before loading into the final target | Load first, then transform |
+| Often uses a separate transformation engine | Often uses target-platform compute |
+| May transform before raw data is stored in the target | Often preserves raw data in the target |
+| Useful when pre-load transformation is required | Useful when the target can process data efficiently |
+
+A real architecture may use both patterns.
+
+## 6.4 What Is a Data Pipeline?
+
+A data pipeline automates the movement and/or transformation of data between systems.
+
+A pipeline may include:
+
+- Source extraction
+- File creation
+- Data validation
+- Transformation
+- Loading
+- Scheduling
+- Dependencies
+- Retry logic
+- Monitoring
+- Notifications
+
+## 6.5 Orchestration vs. Transformation
+
+**Orchestration** controls when and in what order activities execute.
+
+**Transformation** changes the data itself.
+
+For example, Azure Data Factory may orchestrate a Databricks job. Databricks and Spark perform the transformation while ADF coordinates execution.
+
+---
+
+# 7. Data Warehouse Architecture
+
+A data warehouse integrates and organizes data for reporting and analytics.
+
+A common conceptual architecture has three layers.
+
+## 7.1 Staging Layer
+
+The staging layer receives incoming data.
+
+Common responsibilities:
+
+- Land data from source systems
+- Preserve source-like records
+- Record ingestion metadata
+- Separate extraction from transformation
+- Support troubleshooting and replay
+
+### Transient Staging
+
+Data is retained temporarily and may be deleted after downstream processing succeeds.
+
+### Persistent Staging
+
+Data is retained for longer-term auditing, recovery, replay, or historical purposes.
+
+Neither approach is universally correct. The choice depends on cost, retention policies, source capabilities, and business requirements.
+
+## 7.2 Core Layer
+
+The core layer contains cleaned and integrated data.
+
+Typical operations:
+
+- Standardize data types
+- Handle null values
+- Deduplicate records
+- Standardize codes and timestamps
+- Join multiple sources
+- Apply data quality rules
+- Integrate business entities
+
+## 7.3 Presentation Layer
+
+The presentation layer contains business-ready datasets.
+
+Examples:
+
+- Fact tables
+- Dimension tables
+- Data marts
+- Aggregated tables
+- Analytical views
+
+## 7.4 Architecture Diagram
+
+```text
+Source Systems
+      |
+      v
++---------------------+
+|   Staging Layer     |
+| Raw / Landed Data   |
++---------------------+
+      |
+      v
++---------------------+
+|     Core Layer      |
+| Cleaned and Unified |
+| Data                |
++---------------------+
+      |
+      v
++---------------------+
+| Presentation Layer  |
+| Facts and Dimensions|
++---------------------+
+      |
+      v
+Reports and Analytics
+```
+
+---
+
+# 8. Full Loads, Incremental Loads, and CDC
+
+## 8.1 Full Load
+
+A full load processes all records in the selected dataset.
+
+Advantages:
+
+- Simple conceptual design
+- Can rebuild a target from scratch
+- Useful for initial loads or small datasets
+
+Disadvantages:
+
+- May be slow for large datasets
+- Consumes more compute and bandwidth
+- May increase source-system load
+- Can become expensive
+
+## 8.2 Incremental Load
+
+An incremental load processes only new or changed records since a previous successful run.
+
+Common methods:
+
+- Modified timestamps
+- Increasing IDs
+- Sequence numbers
+- Change Data Capture (CDC)
+- Watermarks
+- Source change tokens
+
+Example:
+
+```sql
+SELECT *
+FROM source_orders
+WHERE updated_at > :last_successful_watermark;
+```
+
+This is illustrative SQL. A production design must consider timestamp precision, late-arriving changes, time zones, duplicates, updates, and deletes.
+
+## 8.3 Watermarks
+
+A watermark records the boundary up to which a pipeline has successfully processed data.
+
+A safe process is:
+
+1. Read the previous watermark.
+2. Extract new or changed records.
+3. Process and write the data.
+4. Validate the output.
+5. Commit the new watermark only after successful completion.
+
+Advancing the watermark too early may cause data loss.
+
+Some pipelines use overlapping extraction windows and deduplication to handle late-arriving changes.
+
+## 8.4 Change Data Capture (CDC)
+
+CDC identifies changes made to source data, including inserts, updates, and deletes.
+
+CDC may use:
+
+- Database transaction logs
+- Change tables
+- Native database features
+- Source timestamps
+- Vendor-specific change tokens
+
+CDC can reduce the need to scan entire tables repeatedly.
+
+## 8.5 Handling Deletes
+
+An incremental pipeline does not automatically detect deletes.
+
+Possible approaches include:
+
+- CDC delete events
+- Soft-delete flags
+- Tombstone records
+- Snapshot comparison
+- Periodic reconciliation
+
+The correct strategy depends on source capabilities and business requirements.
+
+## 8.6 Idempotency
+
+An operation is idempotent when repeating it produces the same intended result as running it once.
+
+Common techniques:
+
+- Stable business keys
+- Deduplication
+- Upserts
+- Deterministic transformations
+- Checkpointing
+- Transactional writes where supported
+
+Idempotency is important because pipelines may retry after failures.
+
+## 8.7 Upsert
+
+An upsert updates a matching target record or inserts a new record when no match exists.
+
+Upsert is a general data-writing technique. It is commonly used for incremental processing and may be used to implement SCD Type 1, but it is not exclusive to SCD Type 1.
+
+---
+
+# 9. Dimensional Modeling
+
+Dimensional modeling organizes analytical data around facts and dimensions.
+
+## 9.1 Fact Tables
+
+A fact table stores business events, measurements, or observations at a defined level of detail.
+
+Example: `FactSales`
+
+| Column | Meaning |
+|---|---|
+| DateKey | Reference to the date dimension |
+| CustomerKey | Reference to the customer dimension |
+| ProductKey | Reference to the product dimension |
+| Quantity | Number of items sold |
+| SalesAmount | Sales value |
+| DiscountAmount | Discount value |
+
+Fact tables commonly contain dimension foreign keys and numeric measures. They may also contain order identifiers or other fields.
+
+## 9.2 Grain
+
+The grain defines exactly what one row in the fact table represents.
+
+Examples:
+
+- One row per order line
+- One row per completed transaction
+- One row per product per store per day
+- One row per sensor per minute
+
+Define the grain before selecting fact keys and measures.
+
+Mixing different grains without an explicit design can lead to incorrect aggregations.
+
+## 9.3 Measures
+
+**Additive measures:** Can be summed across relevant dimensions.
+
+Example: Sales Amount.
+
+**Semi-additive measures:** Can be summed across some dimensions but not others.
+
+Example: Account balance can be summed across accounts but usually not across time.
+
+**Non-additive measures:** Should not simply be summed.
+
+Examples: Percentages and ratios.
+
+## 9.4 Dimension Tables
+
+Dimensions provide descriptive context.
+
+Examples:
+
+- `DimCustomer`
+- `DimProduct`
+- `DimDate`
+- `DimStore`
+- `DimGeography`
+
+A product dimension may contain:
+
+```text
+ProductKey
+ProductID
+ProductName
+Category
+Brand
+```
+
+A customer dimension may contain:
+
+```text
+CustomerKey
+CustomerID
+CustomerName
+Segment
+City
+Region
+```
+
+## 9.5 Example Star Structure
+
+```text
+                 DimDate
+                    |
+                    |
+DimCustomer ---- FactSales ---- DimProduct
+                    |
+                 DimStore
+```
+
+## 9.6 Business Key vs. Surrogate Key
+
+A **business key** comes from the source or business domain, such as `ProductID = 3`.
+
+A **surrogate key** is generated by the warehouse, such as `ProductKey = 1042`.
+
+Surrogate keys are useful for managing historical dimension versions and integrating multiple source systems.
+
+---
+
+# 10. Star Schema vs. Snowflake Schema
+
+## 10.1 Star Schema
+
+A star schema contains a central fact table connected directly to dimension tables.
+
+```text
+               DimDate
+                  |
+DimCustomer -- FactSales -- DimProduct
+                  |
+               DimStore
+```
+
+Advantages:
+
+- Easy to understand
+- Often requires fewer joins
+- Well suited to BI queries
+- Clear separation between facts and dimensions
+
+Trade-offs:
+
+- Dimension attributes may be repeated
+- Dimension tables may be wider
+
+## 10.2 Snowflake Schema
+
+A snowflake schema normalizes some dimensions into related tables.
+
+```text
+FactSales ---- DimProduct ---- DimCategory
+     |
+     +-------- DimCustomer ---- DimCity ---- DimRegion
+     |
+     +-------- DimDate
+```
+
+Advantages:
+
+- May reduce repeated descriptive data
+- Can represent hierarchies explicitly
+- Can centralize maintenance of some attributes
+
+Trade-offs:
+
+- More joins
+- Greater query complexity
+- More tables to maintain
+
+## 10.3 Which Is Better?
+
+Neither is universally better.
+
+Star schemas are often preferred for simple analytical consumption. Snowflake schemas may be appropriate when normalization or hierarchy maintenance provides meaningful benefits.
+
+Performance depends on the data platform, optimizer, storage layout, caching, and query workload.
+
+---
+
+# 11. Slowly Changing Dimensions (SCD)
+
+Slowly Changing Dimensions define how changes to descriptive attributes are stored over time.
+
+Example:
+
+A product's category changes from `Clothing` to `Hair Accessories`.
+
+Assume `ProductID = 3`.
+
+## 11.1 SCD Type 0 — Retain Original Value
+
+Type 0 preserves the original attribute value.
+
+| ProductID | ProductName | Category |
+|---|---|---|
+| 3 | Comb | Clothing |
+
+Even if the source value changes, the original attribute remains unchanged.
+
+Use Type 0 when the original value must remain fixed.
+
+## 11.2 SCD Type 1 — Overwrite
+
+Type 1 overwrites the existing attribute without preserving the prior value in that record.
+
+Before:
+
+| ProductKey | ProductID | ProductName | Category |
+|---:|---:|---|---|
+| 1042 | 3 | Comb | Clothing |
+
+After:
+
+| ProductKey | ProductID | ProductName | Category |
+|---:|---:|---|---|
+| 1042 | 3 | Comb | Hair Accessories |
+
+Advantages:
+
+- Simple implementation
+- Current-state reporting is straightforward
+
+Disadvantages:
+
+- Historical values are not preserved in the Type 1 record
+- Historical facts may appear under the current dimension attribute
+
+## 11.3 SCD Type 2 — Preserve History
+
+Type 2 creates a new dimension row when a tracked attribute changes.
+
+| ProductKey | ProductID | Category | EffectiveFrom | EffectiveTo | IsCurrent |
+|---:|---:|---|---|---|---|
+| 1042 | 3 | Clothing | 2024-01-01 | 2025-03-31 | False |
+| 2088 | 3 | Hair Accessories | 2025-04-01 | NULL | True |
+
+The old version is retained, and the new version receives a new surrogate key.
+
+Type 2 is useful when reports must reflect the attribute value that was true at the time of a transaction.
+
+## 11.4 SCD Type 3 — Limited History
+
+Type 3 stores selected prior values in additional columns.
+
+Example:
+
+```text
+CustomerID
+CurrentRegion
+PreviousRegion
+```
+
+It supports limited comparisons but does not preserve an unlimited sequence of changes.
+
+## 11.5 SCD Comparison
+
+| Type | Behavior | Historical Values |
+|---|---|---|
+| Type 0 | Keep original value | Original value only |
+| Type 1 | Overwrite | Previous value not retained in the Type 1 record |
+| Type 2 | Insert a new version | Full history across rows |
+| Type 3 | Store selected previous values | Limited history |
+
+## 11.6 Important Type 2 Considerations
+
+- Use surrogate keys to distinguish versions.
+- Define effective start and end timestamps.
+- Define how the current version is identified.
+- Ensure fact records reference the correct version.
+- Decide how late-arriving facts are handled.
+- Define a policy for retroactive corrections.
+
+The exact effective-date convention may differ across implementations.
+
+---
+
+# 12. Cloud Computing
+
+Cloud computing provides computing, storage, networking, and managed services through a cloud provider.
+
+Instead of purchasing and operating all physical infrastructure, organizations can provision resources from providers such as Azure, AWS, and GCP.
+
+## 12.1 Benefits
+
+- **Scalability:** Increase or decrease resources.
+- **Elasticity:** Adapt capacity to changing workloads.
+- **Managed services:** Reduce some infrastructure administration.
+- **Faster provisioning:** Create resources through portals, APIs, CLIs, or infrastructure-as-code.
+- **Global availability:** Deploy in multiple supported regions.
+- **Flexible pricing models:** Pay-as-you-go, provisioned capacity, reserved commitments, or other models depending on the service.
+
+## 12.2 Important Trade-Offs
+
+Cloud is not automatically cheaper or perfectly secure.
+
+Costs may increase because of:
+
+- Oversized compute
+- Idle clusters
+- Excessive data movement
+- Repeated full scans
+- Unnecessary storage
+- Cross-region transfers
+- Poorly designed pipelines
+
+Security follows a shared-responsibility model. Customers still need to configure identities, permissions, data protection, secrets, network access, and applications appropriately.
+
+## 12.3 Service Models
+
+- **IaaS:** Infrastructure as a Service
+- **PaaS:** Platform as a Service
+- **SaaS:** Software as a Service
+
+Data engineering architectures may use a combination of these models.
+
+---
+
+# 13. Medallion Architecture
+
+Medallion Architecture separates data into layers that progressively improve its readiness for use.
+
+The common layers are:
+
+- Bronze
+- Silver
+- Gold
+
+## 13.1 Bronze Layer — Raw Data
+
+Purpose: store ingested data in a source-like representation.
+
+Typical practices:
+
+- Preserve original records where appropriate.
+- Record source and ingestion metadata.
+- Support auditing and reprocessing.
+- Avoid silently dropping source fields.
+- Apply access controls and retention policies.
+
+Raw data may include operational metadata, such as ingestion timestamps and pipeline run identifiers.
+
+## 13.2 Silver Layer — Cleaned and Conformed Data
+
+Purpose: create consistent, reliable datasets.
+
+Typical operations:
+
+- Data type validation
+- Deduplication
+- Null handling
+- Schema enforcement or controlled evolution
+- Standardization
+- Data quality checks
+- Joining multiple sources
+- CDC application
+- Entity resolution
+
+## 13.3 Gold Layer — Business-Ready Data
+
+Purpose: serve reporting and analytical use cases.
+
+Typical outputs:
+
+- Fact tables
+- Dimension tables
+- Data marts
+- KPI tables
+- Aggregated datasets
+- Reporting views
+
+## 13.4 Architecture Diagram
+
+```text
+Databases | APIs | Files | Streams | IoT
+                    |
+                    v
+          +---------------------+
+          | BRONZE              |
+          | Raw / Landed Data   |
+          +---------------------+
+                    |
+                    v
+          +---------------------+
+          | SILVER              |
+          | Cleaned / Validated |
+          | Conformed Data      |
+          +---------------------+
+                    |
+                    v
+          +---------------------+
+          | GOLD                |
+          | Facts / Dimensions  |
+          | Aggregations / Marts|
+          +---------------------+
+                    |
+                    v
+       BI | Analytics | Data Science | Apps
+```
+
+## 13.5 Batch and Streaming
+
+Medallion Architecture can support batch and streaming pipelines.
+
+Streaming designs must additionally consider:
+
+- Event time
+- Processing time
+- Late-arriving events
+- Checkpointing
+- Duplicate events
+- State management
+- Recovery behavior
+- Latency requirements
+
+## 13.6 Traditional Layers vs. Medallion Layers
+
+A common conceptual mapping is:
+
+| Traditional Warehouse Layer | Common Medallion Equivalent |
+|---|---|
+| Landing or Staging | Bronze |
+| Cleaned or Integrated Core | Silver |
+| Presentation or Data Marts | Gold |
+
+This mapping is conceptual, not a universal standard.
+
+---
+
+# 14. Cloud Providers and Data Lake Storage
+
+## 14.1 Major Cloud Providers
+
+- Microsoft Azure
+- Amazon Web Services (AWS)
+- Google Cloud Platform (GCP)
+
+They offer similar categories of services, but their features, limitations, pricing, and integrations differ.
+
+## 14.2 Object Storage
+
+Object storage is used to store files and data objects at scale.
+
+Common uses:
+
+- Data lakes
+- Application logs
+- Backups
+- Large datasets
+- Analytics files
+- Media objects
+
+Object storage is not identical to a traditional file system, even when directory-like interfaces are provided.
+
+## 14.3 Storage Service Examples
+
+| Provider | Example Service |
+|---|---|
+| Azure | Azure Data Lake Storage Gen2 |
+| AWS | Amazon S3 |
+| GCP | Google Cloud Storage |
+
+## 14.4 Azure Data Lake Storage Gen2
+
+ADLS Gen2 is an Azure data-lake storage offering built on Azure Blob Storage capabilities and supports a hierarchical namespace.
+
+It can store:
 
 - CSV
 - JSON
 - Parquet
 - Logs
 - Images
-- Documents
 - Other structured, semi-structured, and unstructured data
 
-Data lakes can support analytics, data science, machine learning, and large-scale processing.
+Important considerations include:
 
-A data lake still requires metadata, access controls, data quality, retention policies, and governance.
-
-### 8.2 Data Warehouse
-
-A data warehouse is designed for analytical workloads and commonly provides curated data models, SQL access, and performance features for business reporting.
-
-Data warehouses remain valuable even when an organization also operates a data lake.
-
-### 8.3 Schema-on-Write
-
-Schema-on-write applies structure and validation when data is written.
-
-### 8.4 Schema-on-Read
-
-Schema-on-read interprets or applies structure when data is queried.
-
-Modern platforms can support both approaches at different stages.
-
-### 8.5 Lakehouse
-
-A lakehouse combines flexible file-based storage with table-management capabilities commonly associated with analytical databases.
-
-Depending on the technology, these capabilities may include:
-
-- Table metadata
-- Transactions
-- Schema enforcement
-- Schema evolution
-- Version history
-- Analytical query support
-
-**Important:** CSV, JSON, and Parquet are file formats. Delta Lake is a table/storage technology that commonly uses Parquet files together with a transaction log.
+- File sizes
+- Partitioning
+- Directory structure
+- Access control
+- Retention
+- Data format
+- Encryption
+- Network access
+- Lifecycle management
 
 ---
 
-## 9. Row-Based and Columnar File Formats
+# 15. Azure Data Engineering Services
 
-### Row-Based Formats
+This section summarizes the services introduced in the class.
 
-Row-based formats group the fields of each record together.
+## 15.1 Azure Event Hubs
+
+**Primary purpose:** Ingest high-throughput event streams.
 
 Examples:
 
-- CSV as a text-based record format
-- Avro as a row-oriented binary serialization format
-
-They can be suitable for record-oriented access patterns and certain ingestion or event-processing workloads.
-
-### Columnar Formats
-
-Columnar formats group values by column.
-
-Examples:
-
-- Parquet
-- ORC
-
-They are often useful for analytical workloads that scan many rows while reading only a subset of columns.
-
-Columnar formats can support compression and encoding strategies that reduce storage and data scanning.
-
-### Format Selection
-
-Choose a format based on:
-
-- Workload
-- Query patterns
-- Schema requirements
-- Compression
-- Interoperability
-- Processing engine
-- Update patterns
-- Operational constraints
-
-No file format is best for every workload.
-
----
-
-## 10. Delta Lake
-
-Delta Lake provides table-management capabilities over data files, commonly Parquet.
-
-### Transaction Log
-
-A Delta table maintains a transaction log, commonly stored in `_delta_log`.
-
-Depending on the implementation and version, it can include JSON transaction files and checkpoint files.
-
-### ACID Transactions
-
-ACID stands for:
-
-- **Atomicity:** A transaction is applied completely or not applied.
-- **Consistency:** Defined consistency rules are maintained.
-- **Isolation:** Concurrent operations follow the system's isolation guarantees.
-- **Durability:** Committed changes persist according to the system's guarantees.
-
-### Time Travel
-
-Time travel allows queries against previous table versions when the necessary log history and data files are retained.
-
-Retention and cleanup operations can limit the available history.
-
-### Schema Enforcement
-
-Schema enforcement helps prevent incompatible data from being written.
-
-### Schema Evolution
-
-Schema evolution allows supported schema changes, such as adding columns, under controlled rules and configuration.
-
----
-
-## 11. Big Data
-
-Big Data describes data or processing requirements that challenge conventional systems because of scale, speed, variety, complexity, or operational constraints.
-
-There is no universal size threshold that defines Big Data.
-
-Common characteristics include:
-
-- **Volume:** Amount of data
-- **Velocity:** Speed of data generation and processing
-- **Variety:** Range of data types and formats
-- **Veracity:** Data reliability and quality
-- **Value:** Business usefulness
-
-### Apache Kafka
-
-Kafka is a distributed event-streaming platform used to publish, store, and consume event streams.
-
-Typical use cases include:
-
-- Application events
 - IoT telemetry
-- Event-driven architectures
-- Streaming ingestion
+- Application events
+- Device signals
+- Clickstream events
+- Logs
 
-### Apache Airflow
+Event Hubs receives events so downstream consumers can process them.
 
-Airflow orchestrates workflows represented as Directed Acyclic Graphs (DAGs).
+Important considerations:
 
-It manages scheduling, dependencies, and task execution state.
+- Partitions
+- Consumer groups
+- Event retention
+- Throughput
+- Consumer checkpoints
+- Duplicate handling
+- Event ordering
 
-Airflow is an orchestration tool, not a general-purpose distributed processing engine like Spark.
+Event Hubs is not a relational database or a complete data transformation engine.
 
-### Apache Hive
+## 15.2 Azure SQL Database
 
-Hive provides SQL-oriented data warehousing capabilities over data stored in supported distributed-storage environments.
+**Primary purpose:** Managed relational database service.
 
-Its execution architecture depends on the deployment and ecosystem.
+It supports relational tables and SQL operations according to the service's capabilities and permissions.
 
-### Apache Spark
+Examples of SQL operations include:
 
-Spark is a distributed processing engine used for:
+```sql
+SELECT *
+FROM Customers;
+```
 
-- Batch processing
-- SQL analytics
+```sql
+UPDATE Customers
+SET City = 'Cairo'
+WHERE CustomerID = 101;
+```
+
+```sql
+DELETE FROM Customers
+WHERE CustomerID = 101;
+```
+
+Azure SQL Database can support operational workloads and act as a source for analytical ingestion.
+
+Not every SQL Server feature or administrative operation is identical across all Azure SQL offerings.
+
+## 15.3 Azure Data Lake Storage Gen2
+
+**Primary purpose:** Scalable data-lake storage.
+
+Typical uses:
+
+- Landing raw source data
+- Storing Bronze, Silver, and Gold datasets
+- Keeping historical data
+- Storing Parquet and other file formats
+- Separating storage from processing compute
+
+Access control, retention, format choice, and file layout should be planned deliberately.
+
+## 15.4 Azure Data Factory (ADF)
+
+**Primary purpose:** Data integration and orchestration.
+
+ADF can:
+
+- Connect to supported sources and destinations
+- Copy data
+- Schedule pipelines
+- Manage activity dependencies
+- Parameterize workflows
+- Trigger downstream jobs
+- Retry eligible failures
+
+Example:
+
+```text
+Source Database
+      |
+      v
+Azure Data Factory
+      |
+      v
+ADLS Gen2 Bronze
+      |
+      v
+Trigger Databricks Job
+```
+
+ADF can orchestrate a transformation in another service rather than performing every transformation itself.
+
+## 15.5 Azure Databricks and Apache Spark
+
+**Primary purpose:** Distributed data processing and analytics.
+
+Typical tasks:
+
 - Large-scale transformations
-- Streaming-related workloads
-- Machine-learning tasks
-
-### Databricks
-
-Databricks is a managed data and AI platform commonly used for Spark-based processing and lakehouse workloads.
-
-Managed services reduce some infrastructure work but do not remove the need to understand performance, security, cost, and data design.
-
----
-
-## 12. Distributed Computing and Spark Architecture
-
-Distributed computing divides processing work across multiple machines or compute resources.
-
-### Cluster
-
-A cluster is a group of compute resources working together.
-
-### Node
-
-A node is an individual machine or compute unit within a cluster.
-
-### Spark Driver
-
-The driver coordinates a Spark application.
-
-Responsibilities include:
-
-- Creating execution plans
-- Scheduling tasks
-- Coordinating executors
-- Tracking application progress
-
-### Spark Executors
-
-Executors run distributed tasks, process partitions, and may cache data.
-
-### Shuffles
-
-A shuffle redistributes data between partitions or executors. Shuffles commonly occur during joins, aggregations, and repartitioning.
-
-They can be expensive because they consume network and disk resources.
-
-### Data Skew
-
-Data skew occurs when some partitions contain significantly more data or work than others.
-
-Potential solutions include:
-
-- Revising partitioning
-- Salting skewed keys
-- Adjusting join strategies
-- Using adaptive query execution where supported
-- Redesigning expensive aggregations
-
-### Spark Performance Considerations
-
-- Inspect execution plans.
-- Avoid unnecessary shuffles.
-- Select efficient file formats.
-- Manage partition sizes.
-- Watch for small files.
-- Investigate skew.
-- Use appropriate compute resources.
-- Measure cost as well as runtime.
-
----
-
-## 13. Cloud Computing
-
-Cloud computing provides on-demand access to compute, storage, networking, databases, and other services.
-
-Major providers include:
-
-- Microsoft Azure
-- Amazon Web Services (AWS)
-- Google Cloud Platform (GCP)
-
-### Benefits
-
-- Elastic scaling
-- Faster provisioning
-- Managed services
-- Reduced need to purchase all physical infrastructure
-- Usage-based pricing models
-
-Cloud is not automatically cheaper or secure by default.
-
-Costs may include compute, storage, data transfer, managed services, transactions, and idle resources.
-
-Security follows a shared-responsibility model. The provider and customer have different responsibilities depending on the service.
-
-### Learn One Cloud First
-
-Learning one provider deeply can help establish transferable knowledge about:
-
-- Object storage
-- Identity and access
-- Compute
-- Networking
-- Orchestration
-- Monitoring
-- Security
-- Governance
-- Cost management
-
-Examples of cloud object storage include ADLS Gen2, Amazon S3, and Google Cloud Storage.
-
-Free credits and trial terms change over time, so current offers should be checked in official provider documentation.
-
----
-
-## 14. Medallion Architecture
-
-Medallion architecture organizes data into layers with increasing refinement.
-
-### Bronze Layer
-
-Purpose: Preserve source data in raw or minimally changed form.
-
-Common practices:
-
-- Retain source records
-- Add ingestion metadata
-- Track batch or run identifiers
-- Support replay and reprocessing
-- Preserve traceability
-
-Schema handling depends on the platform and design; Bronze does not universally mean that no schema exists.
-
-### Silver Layer
-
-Purpose: Clean and standardize data.
-
-Typical operations:
-
-- Data validation
+- Joining datasets
+- Parsing nested JSON
 - Deduplication
-- Data type normalization
-- Standardization
-- Business-rule application
-- Joining related datasets
-- Quality checks
-- Controlled schema handling
+- Aggregations
+- Batch processing
+- Streaming processing
+- Data quality validation
 
-### Gold Layer
+### Apache Spark Concepts
 
-Purpose: Prepare business-ready data.
+**Distributed processing:** Work is divided across tasks and compute resources.
+
+**Partitioning:** Data is divided into pieces for parallel processing.
+
+**Shuffle:** Data is redistributed between partitions, often during joins and aggregations. Shuffles can be expensive.
+
+**Caching:** Reusing data already materialized in memory or another supported storage layer can improve performance when appropriate.
+
+Managed platforms reduce some infrastructure administration, but engineers still need to design efficient jobs and manage compute and cost.
+
+## 15.6 Azure Synapse Analytics
+
+**Primary purpose in the architecture discussed:** Analytical warehousing and querying.
+
+It can be used for warehouse-style data and analytical SQL workloads, depending on the components and configuration selected.
+
+The class positioned Synapse as the warehouse/modeling component used for facts, dimensions, and analytical datasets.
+
+Broadly similar categories include Snowflake, Amazon Redshift, and Google BigQuery, but their implementations are not identical.
+
+## 15.7 Power BI
+
+**Primary purpose:** Business intelligence and data visualization.
+
+Power BI supports:
+
+- Reports
+- Dashboards
+- KPI cards
+- Tables and matrices
+- Bar charts
+- Line charts
+- Pie charts
+- Filters and slicers
+- Interactive exploration
+
+Typical consumers include analysts, managers, executives, and operational teams.
+
+Power BI is a presentation and analysis layer. It does not replace the need for sound upstream data modeling and quality controls.
+
+## 15.8 Microsoft Purview
+
+The class referred to Azure Purview. The governance product is now known as Microsoft Purview.
+
+Depending on the current features and configuration, governance-related capabilities can include:
+
+- Data discovery
+- Cataloging
+- Classification
+- Lineage
+- Governance workflows
+
+Governance also requires ownership, policies, definitions, and operational processes—not just a tool.
+
+## 15.9 Azure DevOps
+
+Azure DevOps can support:
+
+- Source control
+- Pull requests
+- Build pipelines
+- Release pipelines
+- Automated testing
+- Environment promotion
+- Work tracking
+
+A common deployment path is:
+
+```text
+Development
+     |
+     v
+Testing / QA
+     |
+     v
+Production
+```
+
+Use environment-specific configuration and appropriate approvals.
+
+## 15.10 Azure Key Vault
+
+Key Vault stores and controls access to secrets, keys, and certificates.
+
+Examples:
+
+- API credentials
+- Passwords
+- Connection secrets
+- Certificates
+- Cryptographic keys
+
+Do not hard-code secrets in notebooks, pipeline definitions, source code, or GitHub repositories.
+
+Use managed identities or other supported identity mechanisms where appropriate.
+
+## 15.11 Microsoft Entra ID
+
+Microsoft Entra ID, formerly Azure Active Directory, provides identity and access management capabilities.
+
+It supports identity and authentication controls for users and workloads. Authorization must also be correctly configured on the target resources.
+
+## 15.12 Azure Monitor
+
+Azure Monitor provides monitoring capabilities for supported resources and workloads.
+
+It can help track:
+
+- Pipeline success and failure
+- Execution duration
+- Resource utilization
+- Logs and metrics
+- Alerts
+- Error rates
+- Data freshness indicators
+
+Technical monitoring should be combined with data quality monitoring.
+
+## 15.13 Azure Cost Management
+
+Cost Management helps organizations understand and control cloud spending.
+
+Good practices include:
+
+- Setting budgets and alerts
+- Reviewing spending by resource
+- Tagging resources
+- Right-sizing compute
+- Stopping idle resources
+- Reviewing storage retention
+- Avoiding unnecessary data movement
+- Optimizing pipeline frequency
+
+Cloud pricing changes and varies by service, region, and usage model.
+
+---
+
+# 16. End-to-End Azure Architecture
+
+The following architecture organizes the components discussed in the class into a single conceptual flow.
+
+## 16.1 Architecture Diagram
+
+```text
+                      SOURCE SYSTEMS
+        +----------------+----------------------+
+        |                |                      |
+        v                v                      v
+  OLTP Databases      APIs / Files          IoT / Events
+        |                |                      |
+        |                v                      v
+        |           Azure Data Factory     Azure Event Hubs
+        |                |                      |
+        +----------------+----------------------+
+                         |
+                         v
+                 ADLS Gen2 — BRONZE
+                 Raw / Landed Data
+                         |
+                         v
+             Azure Databricks + Spark
+              Validation and Processing
+                         |
+                         v
+                  ADLS Gen2 — SILVER
+                  Clean, Conformed Data
+                         |
+                         v
+             Warehouse / Modeling Layer
+                Azure Synapse Analytics
+                         |
+                         v
+                    GOLD LAYER
+             Facts, Dimensions, Aggregates
+                         |
+                 +-------+--------+
+                 |                |
+                 v                v
+              Power BI       Analysts / Data Science
+           Reports / KPIs    SQL / Notebooks / ML
+```
+
+## 16.2 Step 1 — Source Systems
+
+Data may originate from:
+
+- Operational databases
+- APIs
+- Files
+- SaaS applications
+- IoT devices
+- Event streams
+
+Understand the source schema, change behavior, access requirements, and latency expectations before designing ingestion.
+
+## 16.3 Step 2 — Event Hubs for Streaming
+
+Event Hubs receives high-throughput streams from applications and devices.
+
+The downstream architecture must account for consumer progress, duplicates, event time, partitioning, and recovery.
+
+## 16.4 Step 3 — Data Factory for Batch Ingestion
+
+ADF can extract data from supported sources and copy it into the data lake.
+
+It can also coordinate dependencies and trigger downstream processing after ingestion completes.
+
+## 16.5 Step 4 — Bronze in ADLS Gen2
+
+Bronze holds raw or source-like ingested data.
+
+Useful metadata includes:
+
+- Source system
+- Ingestion timestamp
+- Pipeline run ID
+- Source file or batch identifier
+- Schema version, where available
+
+Raw retention supports replay and troubleshooting, subject to security, privacy, compliance, and cost requirements.
+
+## 16.6 Step 5 — Databricks and Spark Transform Bronze into Silver
+
+Common transformations:
+
+- Validate required fields
+- Standardize data types
+- Deduplicate records
+- Handle invalid data
+- Standardize timestamps
+- Apply CDC changes
+- Join related sources
+- Create reusable entities
+
+Define how invalid records are handled. Depending on requirements, they may be rejected, quarantined, repaired, or reported.
+
+## 16.7 Step 6 — Build Gold Data
+
+The warehouse/modeling layer creates business-ready datasets.
 
 Examples:
 
 - Fact tables
 - Dimension tables
-- Aggregated metrics
-- KPIs
-- Curated data products
-- Reporting datasets
+- Aggregated tables
+- Data marts
+- Reporting-ready views
 
-The medallion pattern is useful but not mandatory. Some architectures combine layers or use different names.
+The design should define grain, keys, measures, SCD behavior, quality rules, and business definitions.
 
----
+## 16.8 Step 7 — Serve Data to Consumers
 
-## 15. Azure Data Engineering Services
+Power BI can connect to curated data and present business metrics.
 
-### Azure Event Hubs
+Analysts and data scientists may also use SQL, notebooks, and other analytical or machine-learning tools.
 
-A managed service for high-volume event ingestion and streaming data.
+## 16.9 Step 8 — Governance and Operations
 
-### Azure SQL Database
+Cross-cutting controls include:
 
-A managed relational database service on Azure.
+- Microsoft Purview for relevant governance and lineage capabilities
+- Microsoft Entra ID for identity
+- Azure Key Vault for secrets
+- Azure Monitor for observability
+- Azure DevOps for CI/CD
+- Cost Management for spending oversight
 
-Its capabilities and operational behavior are not identical to every SQL Server deployment or relational platform.
-
-### Azure Data Lake Storage Gen2
-
-ADLS Gen2 provides data-lake storage capabilities on Azure Blob Storage with hierarchical namespace support.
-
-It is commonly used to store analytical files and lakehouse data.
-
-### Azure Data Factory
-
-ADF provides data integration and orchestration capabilities, including connectors, copy activities, scheduling, and pipeline coordination.
-
-It can invoke other compute services to perform transformations.
-
-### Azure Databricks
-
-A managed data and AI platform commonly used for Spark-based distributed transformations and lakehouse workloads.
-
-### Azure Synapse Analytics
-
-An Azure analytics service that provides SQL and other analytical capabilities depending on the component used.
-
-It can be part of an analytical or warehouse architecture.
-
-### Power BI
-
-Power BI is used to build:
-
-- Reports
-- Dashboards
-- Semantic models
-- KPIs
-- Interactive business visualizations
+A production architecture also needs testing, data quality, recovery, access control, documentation, retention, and incident management.
 
 ---
 
-## 16. Supporting Azure Services
+# 17. Governance, Security, DevOps, Monitoring, and Cost
 
-### Microsoft Purview
+## 17.1 Data Governance
 
-Supports data governance, cataloging, discovery, and lineage capabilities, depending on configuration.
+Data governance defines how data is owned, documented, protected, and used.
 
-Governance responsibilities are typically shared across data owners, stewards, platform teams, engineers, and security teams.
+Questions include:
 
-### Azure DevOps
+- Who owns the dataset?
+- What does each field mean?
+- Where did the data originate?
+- Who can access it?
+- Is the data sensitive?
+- How long should it be retained?
+- What quality rules apply?
+- How are issues resolved?
 
-Can support source control, work tracking, build pipelines, release pipelines, and CI/CD.
+## 17.2 Data Lineage
 
-### Azure Key Vault
+Data lineage describes where data came from and how it moved or changed.
 
-Stores and manages secrets, keys, and certificates.
+It helps teams:
 
-Avoid hardcoding credentials in source code or pipeline definitions.
+- Trace report values to source systems
+- Understand downstream impact from schema changes
+- Investigate quality issues
+- Document transformations
+- Support audits
 
-### Microsoft Entra ID
+## 17.3 Security Fundamentals
 
-Provides identity and access management for users, applications, and services.
+- Use least-privilege permissions.
+- Avoid hard-coded credentials.
+- Prefer managed identities where supported.
+- Restrict network exposure.
+- Protect data in transit and at rest.
+- Separate development and production access.
+- Audit sensitive operations.
+- Apply data classification and retention policies.
+- Prevent logs from exposing secrets.
 
-### Azure Monitor
+## 17.4 CI/CD
 
-Provides monitoring capabilities, including metrics, logs, and alerts.
+CI/CD stands for Continuous Integration and Continuous Delivery/Deployment.
 
-### Azure Cost Management
+A typical process:
 
-Helps analyze and manage cloud spending through cost analysis, budgets, and related capabilities.
+1. Store code and pipeline definitions in version control.
+2. Review changes through pull requests.
+3. Run automated tests.
+4. Deploy to development.
+5. Run integration tests.
+6. Promote to QA or staging.
+7. Deploy to production with appropriate controls.
+8. Monitor the release and recover if necessary.
+
+Data tests may include schema checks, uniqueness checks, null checks, referential checks, row-count thresholds, and reconciliation totals.
+
+## 17.5 Monitoring
+
+Monitor both technical execution and data correctness.
+
+### Technical Monitoring
+
+- Job success and failure
+- Runtime
+- Resource utilization
+- Retries
+- Connectivity
+- Stream lag
+
+### Data Quality Monitoring
+
+- Freshness
+- Unexpected row-count changes
+- Null rates
+- Duplicate rates
+- Schema drift
+- Distribution changes
+- Reconciliation failures
+
+A pipeline can succeed technically and still produce incorrect data.
+
+## 17.6 Cost Optimization
+
+- Right-size compute.
+- Stop idle resources where supported.
+- Optimize job frequency.
+- Avoid unnecessary full scans.
+- Manage file sizes and formats.
+- Apply retention policies.
+- Reduce unnecessary data transfers.
+- Tag resources.
+- Set budgets and alerts.
+- Measure performance and cost together.
 
 ---
 
-## 17. End-to-End Azure Data Engineering Architecture
+# 18. Mind Maps and Architecture Diagrams
 
-A possible architecture is:
-
-1. Data originates from databases, APIs, files, IoT devices, or applications.
-2. Azure Event Hubs receives streaming events where required.
-3. Azure Data Factory coordinates batch ingestion and data movement.
-4. ADLS Gen2 stores raw or minimally changed data in Bronze.
-5. Databricks/Spark cleans and transforms data into Silver.
-6. Curated transformations create Gold tables and business models.
-7. Power BI, SQL analytics, or data-science tools consume appropriate curated datasets.
-8. Governance, identity, monitoring, deployment, and cost management operate across the platform.
-
-### Architecture Diagram
+## 18.1 Data Engineering Mind Map
 
 ```text
-Operational Databases / APIs / Files / IoT
-                    |
-          +---------+---------+
-          |                   |
-      Batch Data          Event Streams
-          |                   |
-  Azure Data Factory    Azure Event Hubs
-          |                   |
-          +---------+---------+
-                    |
-            ADLS Gen2 — Bronze
-                    |
-          Azure Databricks / Spark
-                    |
-            ADLS Gen2 — Silver
-                    |
-         Curated Transformations
-                    |
-             Gold Data Models
-                    |
-          +---------+---------+
-          |                   |
-       Power BI         SQL / Data Science
-          |
-    Reports and KPIs
+DATA ENGINEERING
+|
++-- Production
+|   +-- OLTP Databases
+|   +-- APIs
+|   +-- Files
+|   +-- Event Streams
+|   +-- IoT
+|
++-- Ingestion
+|   +-- Batch
+|   +-- Streaming
+|   +-- Full Load
+|   +-- Incremental Load
+|   +-- CDC
+|
++-- Storage
+|   +-- Relational Databases
+|   +-- Data Lakes
+|   +-- Data Warehouses
+|
++-- Transformation
+|   +-- Cleaning
+|   +-- Validation
+|   +-- Deduplication
+|   +-- Joins
+|   +-- Aggregation
+|
++-- Modeling
+|   +-- Facts
+|   +-- Dimensions
+|   +-- Star Schema
+|   +-- Snowflake Schema
+|   +-- SCD
+|
++-- Serving
+|   +-- Power BI
+|   +-- Analytics
+|   +-- Data Science
+|   +-- Applications
+|
++-- Operations
+    +-- Orchestration
+    +-- Monitoring
+    +-- Governance
+    +-- Security
+    +-- CI/CD
+    +-- Cost Management
 ```
 
-### Important Design Note
+## 18.2 Azure Service Map
 
-Not every solution needs every service.
-
-A batch-only pipeline may not need Event Hubs. A lakehouse may serve some consumers without a separate Synapse layer. Service selection should follow requirements rather than a fixed diagram.
-
----
-
-## 18. Data Engineering Best Practices
-
-### Data Quality
-
-Validate completeness, uniqueness, validity, consistency, and freshness.
-
-### Reliability
-
-Design for failures, retries, recovery, and safe publication of results.
-
-### Idempotency
-
-Ensure that retries do not create incorrect duplicate effects.
-
-### Incremental Processing
-
-Avoid unnecessary full reloads when reliable change tracking is available.
-
-### Security
-
-Use least-privilege access, secure credentials, appropriate identity management, and clear data-access policies.
-
-### Observability
-
-Track pipeline status, runtime, row counts, data freshness, rejected records, and quality metrics.
-
-### Governance
-
-Maintain clear ownership, discoverable metadata, lineage, and appropriate retention rules.
-
-### CI/CD
-
-Use source control, automated tests, and controlled deployments across development, testing, and production.
-
-### Cost Management
-
-Monitor resource usage, eliminate unnecessary compute, review data movement, and measure performance-cost trade-offs.
-
-### Documentation
-
-Document assumptions, architecture decisions, data contracts, quality expectations, and operational recovery procedures.
+```text
+Batch ingestion        -> Azure Data Factory
+Streaming ingestion    -> Azure Event Hubs
+Data lake storage      -> ADLS Gen2
+Distributed processing-> Azure Databricks / Spark
+Analytical warehouse   -> Azure Synapse Analytics
+Reporting              -> Power BI
+Governance / lineage   -> Microsoft Purview
+Secrets                -> Azure Key Vault
+Identity               -> Microsoft Entra ID
+Monitoring             -> Azure Monitor
+CI/CD                  -> Azure DevOps
+Cost tracking          -> Azure Cost Management
+```
 
 ---
 
-## 19. Interview Preparation Checklist
+# 19. Data Engineering Interview Questions and Answers
 
-### Fundamentals
+## Section A: Fundamentals
 
-- Explain the Data Engineering lifecycle.
-- Distinguish upstream and downstream systems.
-- Explain relational databases, SQL, and NoSQL.
-- Compare full and incremental loads.
-- Explain CDC, watermarks, and idempotency.
+### Q1. What is Data Engineering?
 
-### Data Modeling
+**Answer:** Data Engineering is the discipline of building and maintaining systems that ingest, store, transform, validate, and serve data reliably. It provides trusted data for analytics, reporting, applications, and data science.
 
-- Define fact-table grain.
-- Distinguish facts and dimensions.
-- Explain star and snowflake schemas.
-- Explain SCD Types 0, 1, 2, and 3.
-- Describe surrogate keys and effective dates.
+### Q2. What are the three pillars of Data Engineering?
 
-### Storage and Processing
+**Answer:** Data production, data transformation, and data serving. Production generates data, transformation prepares it, and serving makes it available to consumers.
 
-- Compare data lakes, warehouses, and lakehouses.
-- Compare CSV, Avro, Parquet, and ORC.
-- Explain Delta Lake, ACID, time travel, and schema evolution.
-- Explain Spark drivers, executors, shuffles, partitions, and skew.
-- Distinguish processing from orchestration.
+### Q3. What is the difference between a Data Engineer and a Data Analyst?
 
-### Azure
+**Answer:** A Data Engineer builds and operates the infrastructure and pipelines that make data available. A Data Analyst uses data to answer business questions and communicate insights through analysis and reporting.
 
-- Explain Event Hubs, Data Factory, ADLS Gen2, Databricks, Synapse, and Power BI.
-- Explain Purview, Key Vault, Entra ID, Monitor, DevOps, and Cost Management.
-- Draw an end-to-end architecture.
-- Justify service selection and discuss trade-offs.
+### Q4. What is the difference between a DBA and a Data Engineer?
 
-### Scenario-Based Preparation
+**Answer:** A DBA commonly focuses on operational database health, availability, backups, permissions, and performance. A Data Engineer commonly focuses on ingestion, transformation, orchestration, analytical modeling, and data delivery. Their responsibilities may overlap.
 
-- Handle duplicate records after pipeline retries.
-- Troubleshoot a slow Spark job.
-- Design an incremental load for a large dataset.
-- Preserve historical dimension changes.
-- Handle unexpected schema changes.
-- Improve data freshness.
-- Reduce cloud costs.
-- Secure pipeline credentials.
-- Monitor failures and data quality.
-- Prevent incomplete data from reaching consumers.
+### Q5. What do upstream and downstream mean?
+
+**Answer:** Upstream components provide data or dependencies. Downstream components consume their output. An upstream schema change may affect downstream pipelines and reports.
+
+### Q6. What is a data pipeline?
+
+**Answer:** A data pipeline is an automated workflow that moves or transforms data between systems. It may include extraction, validation, transformation, loading, scheduling, retries, monitoring, and alerting.
+
+### Q7. What is structured data?
+
+**Answer:** Structured data follows a defined schema, typically rows and columns, as in a relational database.
+
+### Q8. What is semi-structured data?
+
+**Answer:** Semi-structured data contains labels or nested structure but may not follow a rigid tabular schema. JSON and XML are common examples.
+
+## Section B: OLTP, OLAP, and Databases
+
+### Q9. What is OLTP?
+
+**Answer:** OLTP stands for Online Transaction Processing. It supports operational transactions such as creating orders, recording payments, and updating inventory.
+
+### Q10. What is OLAP?
+
+**Answer:** OLAP stands for Online Analytical Processing. It supports analysis over large datasets, including aggregations, historical trends, and comparisons across business dimensions.
+
+### Q11. Compare OLTP and OLAP.
+
+**Answer:** OLTP handles frequent, short operational transactions and often uses normalized schemas. OLAP handles analytical queries across large amounts of integrated or historical data and often uses analytical models.
+
+### Q12. Why is normalization important?
+
+**Answer:** Normalization reduces unnecessary duplication and helps prevent data anomalies. It is useful in transactional models, while analytical systems may denormalize selected data for query usability.
+
+### Q13. Explain 1NF, 2NF, and 3NF.
+
+**Answer:** 1NF requires atomic values and avoids repeating groups under the chosen model. 2NF requires 1NF and full dependency on the whole candidate key. 3NF requires 2NF and removes inappropriate transitive dependencies of non-key attributes on the key.
+
+## Section C: ETL and ELT
+
+### Q14. What is ETL?
+
+**Answer:** ETL means Extract, Transform, Load. Data is extracted from source systems, transformed, and loaded into the target.
+
+### Q15. What is ELT?
+
+**Answer:** ELT means Extract, Load, Transform. Data is extracted and loaded first, then transformed inside the target platform.
+
+### Q16. What is the difference between ETL and ELT?
+
+**Answer:** ETL transforms before loading into the final target. ELT loads data first and performs transformations in the target environment. ELT is common when a warehouse or lakehouse can process the data efficiently.
+
+### Q17. What is orchestration?
+
+**Answer:** Orchestration coordinates scheduling, task order, dependencies, retries, and execution. It is different from the transformation logic that changes the data.
+
+### Q18. What makes a pipeline production-ready?
+
+**Answer:** A production-ready pipeline needs validation, secure credentials, idempotent writes where appropriate, retry and recovery logic, logging, monitoring, alerts, tests, documentation, and cost controls.
+
+## Section D: Loading Strategies and CDC
+
+### Q19. What is a full load?
+
+**Answer:** A full load processes all records in the selected dataset. It is simple but can be expensive and slow for large data volumes.
+
+### Q20. What is an incremental load?
+
+**Answer:** An incremental load processes only new or changed records since a previous successful point. It reduces repeated processing but requires reliable change detection.
+
+### Q21. How can incremental loading be implemented?
+
+**Answer:** Common methods include modification timestamps, increasing IDs, sequence numbers, CDC, and source change tokens. The pipeline should persist a watermark, process the correct extraction window, validate the output, and commit the watermark only after success.
+
+### Q22. What is a watermark?
+
+**Answer:** A watermark is a marker indicating the last successfully processed boundary. It helps determine where the next incremental run should continue.
+
+### Q23. What is CDC?
+
+**Answer:** Change Data Capture identifies source inserts, updates, and deletes. It can use database logs, change tables, native database features, or other source change mechanisms.
+
+### Q24. How would you handle deletes in an incremental pipeline?
+
+**Answer:** I would determine whether the source exposes delete events through CDC or another mechanism. Then I would implement the required policy, such as physically deleting, marking as deleted, or retaining tombstones.
+
+### Q25. What is idempotency?
+
+**Answer:** Idempotency means repeating an operation produces the same intended result. It is important because pipeline activities may retry after failures. Stable keys, deduplication, upserts, and checkpointing can help.
+
+### Q26. What is an upsert?
+
+**Answer:** An upsert updates an existing record when a match is found or inserts a new record otherwise. Its exact syntax and behavior depend on the platform.
+
+### Q27. What can go wrong if a watermark advances before the target write succeeds?
+
+**Answer:** The next run may skip records that were never safely committed. The watermark should be updated only after successful processing and validation, with a recovery strategy for partial failures.
+
+## Section E: Data Warehousing and Modeling
+
+### Q28. What is a data warehouse?
+
+**Answer:** A data warehouse is an analytical data platform that integrates and organizes data for reporting, historical analysis, and business intelligence.
+
+### Q29. What is a staging layer?
+
+**Answer:** A staging layer receives data from source systems and separates ingestion from downstream transformation. It may preserve source-like data for replay, auditing, or troubleshooting.
+
+### Q30. What is a core layer?
+
+**Answer:** A core layer typically contains cleaned, standardized, and integrated data that can be reused by downstream models.
+
+### Q31. What is a fact table?
+
+**Answer:** A fact table records business events, measurements, or observations at a defined grain. It usually contains foreign keys to dimensions and measures such as quantity or sales amount.
+
+### Q32. What is a dimension table?
+
+**Answer:** A dimension table contains descriptive attributes that provide context for facts, such as customer, product, date, or geography.
+
+### Q33. What is grain?
+
+**Answer:** Grain defines exactly what one fact-table row represents, such as one order line or one product per store per day. It must be established before choosing keys and measures.
+
+### Q34. What is a star schema?
+
+**Answer:** A star schema has a central fact table connected directly to dimension tables. It is generally easy for analysts to understand and is commonly used for BI.
+
+### Q35. What is a snowflake schema?
+
+**Answer:** A snowflake schema normalizes some dimensions into related tables. It can reduce repeated attributes but may require additional joins and increase complexity.
+
+### Q36. Which is better: star schema or snowflake schema?
+
+**Answer:** Neither is always better. A star schema is often simpler for BI. A snowflake schema may be appropriate when normalization or hierarchy management justifies it. The choice should reflect the workload and platform.
+
+### Q37. What is a surrogate key?
+
+**Answer:** A surrogate key is a warehouse-generated identifier for a record or dimension version. It can help distinguish historical versions and integrate multiple source systems.
+
+### Q38. What are additive and non-additive measures?
+
+**Answer:** Additive measures can be summed across relevant dimensions, such as sales amount. Non-additive measures, such as ratios, should not simply be summed. Semi-additive measures can be summed across some dimensions but not others.
+
+## Section F: Slowly Changing Dimensions
+
+### Q39. What is an SCD?
+
+**Answer:** A Slowly Changing Dimension strategy defines how changes to dimension attributes are handled over time.
+
+### Q40. Explain SCD Type 0.
+
+**Answer:** Type 0 preserves the original attribute value and does not apply subsequent changes to that attribute.
+
+### Q41. Explain SCD Type 1.
+
+**Answer:** Type 1 overwrites the existing attribute value without retaining the previous value in that record. It is useful for current-state reporting or correcting values when history is not required.
+
+### Q42. Explain SCD Type 2.
+
+**Answer:** Type 2 inserts a new dimension record when a tracked attribute changes and retains the previous version. It commonly uses surrogate keys and effective-date metadata.
+
+### Q43. Explain SCD Type 3.
+
+**Answer:** Type 3 stores selected previous values in additional columns. It provides limited history rather than a full sequence of versions.
+
+### Q44. When would you use Type 1 instead of Type 2?
+
+**Answer:** I would use Type 1 when only the current attribute value matters or when correcting an erroneous value. I would use Type 2 when historical reporting must reflect the attribute that was valid at the time of a business event.
+
+### Q45. How do facts connect to SCD Type 2 dimensions?
+
+**Answer:** The fact pipeline resolves the dimension version valid at the event time and stores its surrogate key. This often requires matching the business key and checking the effective-date interval.
+
+## Section G: Cloud and Medallion Architecture
+
+### Q46. What is cloud computing?
+
+**Answer:** Cloud computing provides computing, storage, networking, and managed services through a provider. It offers flexible provisioning, but cost and security still depend on architecture and operations.
+
+### Q47. What is a data lake?
+
+**Answer:** A data lake stores large amounts of data in multiple formats, often including raw structured, semi-structured, and unstructured data. It commonly separates storage from processing compute.
+
+### Q48. Explain Bronze, Silver, and Gold.
+
+**Answer:** Bronze contains raw or source-like ingested data. Silver contains cleaned and standardized data. Gold contains curated business-ready datasets such as facts, dimensions, marts, and aggregates.
+
+### Q49. Is Medallion Architecture only for batch processing?
+
+**Answer:** No. It can support batch and streaming workloads. Streaming requires careful handling of event time, duplicates, checkpoints, state, and recovery.
+
+### Q50. Why preserve raw data?
+
+**Answer:** Raw data can support replay, auditing, troubleshooting, and reprocessing after transformation logic changes. Retention must still comply with security, privacy, compliance, and cost requirements.
+
+### Q51. Is cloud always cheaper?
+
+**Answer:** No. Cloud can reduce upfront infrastructure work, but total cost depends on resource sizing, utilization, data movement, retention, service tier, and pricing model.
+
+### Q52. Is cloud security entirely handled by the provider?
+
+**Answer:** No. Cloud security is a shared responsibility. Customers must configure identities, permissions, secrets, data protection, network settings, and applications appropriately.
+
+## Section H: Azure Services
+
+### Q53. What is Azure Event Hubs?
+
+**Answer:** Event Hubs ingests high-throughput event streams, such as IoT telemetry and application events, for downstream consumption and processing.
+
+### Q54. What is Azure Data Factory?
+
+**Answer:** ADF is a data integration and orchestration service that connects supported sources and destinations, copies data, schedules workflows, manages dependencies, and triggers processing.
+
+### Q55. What is ADLS Gen2?
+
+**Answer:** Azure Data Lake Storage Gen2 is an Azure data-lake storage offering with hierarchical namespace support. It stores files and datasets used for raw, refined, and curated data layers.
+
+### Q56. What is Azure Databricks?
+
+**Answer:** Azure Databricks is a managed data and analytics platform that supports Spark-based distributed processing, transformations, large joins, aggregations, and batch or streaming workloads.
+
+### Q57. What is Azure Synapse Analytics?
+
+**Answer:** Synapse Analytics supports Azure analytical and warehouse-style workloads, depending on the selected components and configuration. It was presented in the class as a warehouse/modeling component.
+
+### Q58. What is Power BI?
+
+**Answer:** Power BI provides reports, dashboards, KPIs, and interactive visualizations over curated datasets.
+
+### Q59. What is Microsoft Purview?
+
+**Answer:** Microsoft Purview provides governance-related capabilities such as data discovery, cataloging, classification, and lineage, depending on the current product features and configuration.
+
+### Q60. What is Azure Key Vault?
+
+**Answer:** Key Vault stores and controls access to secrets, keys, and certificates. It helps keep credentials out of source code and pipeline definitions.
+
+### Q61. What is Microsoft Entra ID?
+
+**Answer:** Microsoft Entra ID provides identity and access management capabilities. Resource-level authorization must also be configured correctly.
+
+### Q62. What is Azure Monitor?
+
+**Answer:** Azure Monitor helps collect supported metrics and logs, create alerts, and investigate resource and pipeline failures.
+
+### Q63. How does Azure DevOps help Data Engineers?
+
+**Answer:** It can support source control, pull requests, automated testing, build/release pipelines, and controlled promotion across environments.
+
+### Q64. How should credentials be secured in an Azure pipeline?
+
+**Answer:** Avoid hard-coded secrets. Use Key Vault and supported identity mechanisms such as managed identities where practical. Apply least privilege and ensure logs do not expose credentials.
+
+## Section I: Governance and Operations
+
+### Q65. What is data lineage?
+
+**Answer:** Data lineage describes the origin and transformation path of data. It helps trace report values, investigate quality issues, and assess the impact of source changes.
+
+### Q66. What should be monitored in a pipeline?
+
+**Answer:** Monitor status, duration, retries, latency, row counts, freshness, source availability, schema changes, null and duplicate rates, reconciliation, resource use, and cost.
+
+### Q67. How would you handle schema drift?
+
+**Answer:** Detect the change, determine whether it is compatible with the data contract, and decide whether to accept, quarantine, or reject it. Update downstream transformations and tests deliberately and notify owners when necessary.
+
+### Q68. How would you prevent duplicates?
+
+**Answer:** Define stable keys and duplicate rules, deduplicate records, use idempotent writes, and enforce uniqueness where supported. For streaming workloads, account for repeated delivery and use event IDs or appropriate deduplication strategies.
+
+### Q69. How would you optimize a slow Spark job?
+
+**Answer:** Inspect the execution plan, stage durations, shuffle volume, data skew, and resource usage. Then consider early filtering, selecting fewer columns, join optimization, partitioning, file compaction, and appropriate compute sizing. Measure the effect of each change.
+
+### Q70. How would you control cloud costs?
+
+**Answer:** Track spending by service and workload, set budgets and alerts, right-size compute, stop idle resources, optimize data scans and job frequency, manage retention, and reduce unnecessary transfers.
 
 ---
 
-## Final Takeaways
+# 20. Practical Interview Scenarios
 
-1. Data Engineering focuses on reliable and maintainable data delivery.
-2. Ingestion strategy should reflect business latency and correctness requirements.
-3. Define the grain of a fact table before designing its schema.
-4. Choose SCD types according to historical reporting needs.
-5. Select file formats based on workload characteristics.
-6. Delta Lake adds table-management capabilities beyond a collection of plain files.
-7. Spark distributes processing, while orchestration tools coordinate workflows.
-8. Bronze, Silver, and Gold represent increasing data refinement.
-9. Azure services often complement each other rather than acting as direct replacements.
-10. Production data platforms require quality, reliability, security, governance, observability, deployment discipline, and cost management.
+## Scenario 1: Loading a Very Large Source Table Daily
 
-## Disclaimer
+**Question:** A source table contains 500 million rows. How would you load it daily?
 
-These notes are educational summaries, not official product documentation. Cloud services and product capabilities change over time. Verify current features, availability, pricing, and configuration details in official documentation before implementing production systems.
+**Model Answer:**
+
+I would first check whether the source supports CDC, reliable modification timestamps, or sequence-based change tracking. I would perform an initial backfill in manageable chunks, then use incremental loading.
+
+I would persist a watermark, account for late updates, deduplicate by stable keys, and commit the watermark only after successful target writes. I would monitor source load, row counts, freshness, runtime, and reconciliation. If deletes matter, I would ensure the source provides a way to detect them.
+
+## Scenario 2: A Pipeline Succeeds but Sales Are Too Low
+
+**Question:** A pipeline succeeded, but the dashboard shows half the expected sales. What would you do?
+
+**Model Answer:**
+
+I would trace the metric from Power BI back through the Gold table, transformations, Silver data, and source ingestion. I would compare row counts and sales totals at each stage, inspect the watermark and run metadata, check filters and date ranges, validate joins, and look for skipped incremental records.
+
+After identifying the root cause, I would backfill the affected data safely and add reconciliation tests and alerts.
+
+## Scenario 3: A Customer Changes Region
+
+**Question:** The business wants historical reports to show the region that was valid when each sale occurred.
+
+**Model Answer:**
+
+I would use SCD Type 2 for the customer dimension. When the region changes, I would expire the previous version and insert a new version with a new surrogate key and effective dates. Each sale fact would reference the customer version valid at the sale time.
+
+I would also define how late-arriving sales and retroactive corrections should be handled.
+
+## Scenario 4: An API Returns Duplicate Records After Retries
+
+**Question:** An API occasionally times out and returns the same records again when retried.
+
+**Model Answer:**
+
+I would implement bounded retries with backoff for transient errors, respect rate limits, and record request metadata. Since retries can return duplicate records, I would use stable source IDs or deterministic keys to deduplicate and make writes idempotent.
+
+I would also checkpoint pagination carefully to avoid missing records between pages.
+
+## Scenario 5: A Source Adds a JSON Field
+
+**Question:** A source adds an optional field to its JSON payload. How would you handle it?
+
+**Model Answer:**
+
+I would detect the schema change and determine whether it is backward-compatible. I would preserve the raw payload in Bronze where appropriate and update Silver parsing and tests deliberately if the field is required downstream.
+
+If the new schema violates the data contract, I would quarantine or reject the affected data and notify the source owner.
+
+## Scenario 6: A Pipeline Runs Twice
+
+**Question:** A retry causes the same pipeline to execute twice. How would you prevent duplicate output?
+
+**Model Answer:**
+
+I would design the writes to be idempotent using stable business keys, deduplication, and an appropriate merge/upsert strategy. I would keep run metadata and commit checkpoints only after successful writes. I would explicitly test repeated execution.
+
+## Scenario 7: A Spark Job Creates Too Many Small Files
+
+**Question:** How would you address the small-file problem?
+
+**Model Answer:**
+
+I would inspect file counts, partition strategy, shuffle stages, and downstream query patterns. I would consider compaction, appropriate output partition counts, and avoiding excessive partition columns. I would benchmark the changes to ensure they improve performance without creating data skew or increasing cost unnecessarily.
+
+## Scenario 8: Building a Sales Dashboard
+
+**Question:** A manager wants daily sales by product category and region.
+
+**Model Answer:**
+
+I would clarify the definitions of sales, date, currency, cancellations, refunds, and region. I would define a fact grain, such as one row per order line, and model the sales fact with Date, Product, and Geography or Store dimensions.
+
+I would validate totals against the source, document metric definitions, and expose a curated dataset to Power BI.
+
+## Scenario 9: A Secret Is Committed to GitHub
+
+**Question:** What would you do if a credential was committed to a repository?
+
+**Model Answer:**
+
+I would treat it as compromised and revoke or rotate it immediately. I would investigate possible misuse, replace the hard-coded credential with Key Vault or a supported identity mechanism, and follow the repository's remediation process.
+
+Deleting the visible line alone is insufficient because Git history may retain it. I would also enable secret scanning and add preventive checks.
+
+## Scenario 10: Cloud Costs Suddenly Increase
+
+**Question:** How would you investigate an unexpected cloud bill increase?
+
+**Model Answer:**
+
+I would examine costs by service, resource, region, tag, and time period. I would correlate the increase with deployments, compute scaling, job frequency, storage growth, data transfer, and retries.
+
+I would stop unintended idle resources if safe, right-size workloads, and establish budgets and alerts without compromising data correctness or service requirements.
+
+## Scenario 11: A Dimension Record Has Not Arrived Yet
+
+**Question:** A fact arrives before its dimension record.
+
+**Model Answer:**
+
+I would define a late-arriving dimension strategy. Depending on the business, I might create an inferred placeholder dimension and update it later, or quarantine the fact until the dimension becomes available. The approach should preserve referential integrity and allow correction when the full dimension data arrives.
+
+## Scenario 12: Explain the End-to-End Azure Architecture
+
+**Question:** Describe the Azure architecture from source to dashboard.
+
+**Model Answer:**
+
+"Operational databases and APIs provide batch data, while Event Hubs ingests event streams. Data Factory orchestrates batch extraction and movement into ADLS Gen2 Bronze. Databricks with Spark validates and transforms Bronze into Silver. A warehouse/modeling layer such as Synapse creates Gold facts, dimensions, and aggregates.
+
+Power BI consumes curated data for reports, while analysts and data scientists use approved datasets for deeper analysis. Cross-cutting controls include Microsoft Purview for relevant governance and lineage, Entra ID for identity, Key Vault for secrets, Azure Monitor for observability, Azure DevOps for CI/CD, and Cost Management for spending oversight."
+
+## Scenario 13: Why Not Reload Everything Every Day?
+
+**Question:** Why use incremental loading instead of a daily full load?
+
+**Model Answer:**
+
+A full reload may be appropriate for small datasets or rebuilding a target. However, it can become slow and expensive as the data grows. Incremental loading reduces repeated processing, but it must reliably detect updates and deletes, handle late data, support retries, and include reconciliation or recovery.
+
+## Scenario 14: An Upstream Schema Changes Unexpectedly
+
+**Question:** A source changes its schema without notice.
+
+**Model Answer:**
+
+The pipeline should detect the change through schema validation or parsing errors, capture the failure context, and alert the owner. Depending on the policy, it may quarantine the affected data or accept a compatible additive field.
+
+I would use data contracts, versioning, automated tests, and controlled deployment to protect downstream consumers.
+
+---
+
+# 21. Glossary
+
+| Term | Definition |
+|---|---|
+| API | An interface that enables software systems to exchange data or invoke operations |
+| Batch Processing | Processing data in groups at scheduled or triggered intervals |
+| CDC | Change Data Capture; identifying source inserts, updates, and deletes |
+| Core Layer | A layer containing cleaned and integrated data in some architectures |
+| Data Lake | Storage for large amounts of structured, semi-structured, and unstructured data |
+| Data Mart | A curated analytical dataset focused on a business area or use case |
+| Data Pipeline | An automated sequence of data ingestion, movement, and/or transformation steps |
+| Data Warehouse | A platform optimized for analytical queries and reporting |
+| Dimension | Descriptive context used to filter, group, or label facts |
+| ETL | Extract, Transform, Load |
+| ELT | Extract, Load, Transform |
+| Fact | A business event, measurement, or observation at a defined grain |
+| Grain | The precise meaning of one row in a fact table |
+| Idempotency | Repeated execution produces the same intended result |
+| Incremental Load | Processing only new or changed data since a previous successful point |
+| Lineage | Information about data origin, movement, and transformation |
+| OLAP | Online Analytical Processing |
+| OLTP | Online Transaction Processing |
+| Orchestration | Coordinating schedules, dependencies, retries, and task execution |
+| Partition | A subdivision of data used for processing or storage organization |
+| Primary Key | A key that uniquely identifies a row |
+| SCD | Slowly Changing Dimension strategy |
+| Schema | The structure and types of a dataset |
+| Staging | An intermediate or landing area for incoming data |
+| Surrogate Key | A warehouse-generated identifier |
+| Upsert | Updating a matching record or inserting a new record when no match exists |
+| Watermark | A marker indicating a processing boundary or successful progress point |
+
+---
+
+# 22. Final Revision Checklist
+
+## Data Engineering Fundamentals
+
+- [ ] I can explain what Data Engineering is.
+- [ ] I can explain data production, transformation, and serving.
+- [ ] I can distinguish structured, semi-structured, and unstructured data.
+- [ ] I can explain upstream and downstream dependencies.
+- [ ] I can compare OLTP and OLAP.
+- [ ] I understand the purpose of database normalization.
+
+## Pipelines and Loading
+
+- [ ] I can explain ETL vs. ELT.
+- [ ] I can distinguish orchestration from transformation.
+- [ ] I can compare full and incremental loads.
+- [ ] I understand watermarks and CDC.
+- [ ] I can explain how updates and deletes are handled.
+- [ ] I understand idempotency and retry safety.
+- [ ] I can describe pipeline recovery and reconciliation.
+
+## Dimensional Modeling
+
+- [ ] I can define fact-table grain.
+- [ ] I can distinguish facts, dimensions, measures, and keys.
+- [ ] I can compare star and snowflake schemas.
+- [ ] I understand surrogate keys and business keys.
+- [ ] I can explain SCD Types 0, 1, 2, and 3.
+- [ ] I understand how facts link to Type 2 dimension versions.
+
+## Cloud and Azure
+
+- [ ] I can explain Bronze, Silver, and Gold.
+- [ ] I understand ADLS Gen2, ADF, Event Hubs, Databricks, Synapse, and Power BI.
+- [ ] I can explain the roles of Key Vault, Entra ID, Monitor, DevOps, Purview, and Cost Management.
+- [ ] I understand cloud security and cost trade-offs.
+- [ ] I can explain the end-to-end architecture.
+
+## Production Readiness
+
+- [ ] I can discuss data quality and lineage.
+- [ ] I can handle schema drift and duplicate records.
+- [ ] I understand access control and secret management.
+- [ ] I can explain CI/CD and environment promotion.
+- [ ] I can troubleshoot a pipeline that succeeds technically but produces incorrect data.
+
+---
+
+# Final Summary
+
+The central purpose of Data Engineering is to transform data from multiple operational sources into reliable, secure, well-modeled, and accessible data products.
+
+A common conceptual workflow is:
+
+```text
+Source Systems
+      |
+      v
+Ingestion
+      |
+      v
+Raw / Bronze
+      |
+      v
+Cleaned / Silver
+      |
+      v
+Curated / Gold
+      |
+      v
+Facts and Dimensions
+      |
+      v
+BI | Analytics | Data Science | Applications
+```
+
+The most important skills are not tied to a single vendor. They include understanding data sources, building dependable incremental pipelines, modeling facts and dimensions, handling historical changes, validating data quality, securing access, monitoring failures, and explaining architectural trade-offs.
+
+Azure services such as Data Factory, ADLS Gen2, Event Hubs, Databricks, Synapse Analytics, and Power BI are tools that implement different parts of this broader architecture.
+
+## Suggested GitHub Repository Structure
+
+```text
+data-engineering-masterclass/
+├── README.md
+└── data-engineering-masterclass-guide.md
+```
+
+For a public repository, review the original course's copyright terms and add attribution when appropriate.
